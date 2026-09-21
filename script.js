@@ -4,6 +4,7 @@ const movesElement = document.getElementById("moves");
 const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
 const restartButton = document.getElementById("restart-btn");
+const difficultySelect = document.getElementById("difficulty");
 
 const symbols = [
     "🚀",
@@ -30,6 +31,17 @@ let gameStarted = false;
 
 
 // ===============================
+// DIFFICULTY SETTINGS
+// ===============================
+
+const difficultyTimes = {
+    easy: 60,
+    medium: 45,
+    hard: 30
+};
+
+
+// ===============================
 // START GAME
 // ===============================
 
@@ -44,7 +56,11 @@ function startGame() {
 
     moves = 0;
     score = 0;
-    timeLeft = 60;
+
+    const difficulty = difficultySelect.value;
+
+    timeLeft = difficultyTimes[difficulty];
+
     gameStarted = false;
 
     movesElement.textContent = moves;
@@ -278,7 +294,20 @@ function gameOver() {
 // RESTART
 // ===============================
 
-restartButton.addEventListener("click", startGame);
+restartButton.addEventListener(
+    "click",
+    startGame
+);
+
+
+// ===============================
+// DIFFICULTY CHANGE
+// ===============================
+
+difficultySelect.addEventListener(
+    "change",
+    startGame
+);
 
 
 // ===============================
