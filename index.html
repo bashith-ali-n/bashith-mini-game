@@ -13,28 +13,41 @@
 
     <div class="game-container">
 
+        <!-- GAME TITLE -->
         <h1>🧠 Memory Challenge</h1>
 
         <p class="subtitle">
             Match all the pairs before the timer runs out!
         </p>
 
-        <!-- Difficulty Selection -->
+
+        <!-- DIFFICULTY -->
         <div class="difficulty-section">
 
             <label for="difficulty">
-                🎚️ Difficulty
+                🎚️ Select Difficulty
             </label>
 
             <select id="difficulty">
-                <option value="easy">🟢 Easy</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="hard">🔴 Hard</option>
+
+                <option value="easy">
+                    🟢 EASY — 60 Seconds
+                </option>
+
+                <option value="medium">
+                    🟡 MEDIUM — 45 Seconds
+                </option>
+
+                <option value="hard">
+                    🔴 HARD — 30 Seconds
+                </option>
+
             </select>
 
         </div>
 
-        <!-- Game Information -->
+
+        <!-- GAME INFORMATION -->
         <div class="game-info">
 
             <div class="info-box">
@@ -54,24 +67,34 @@
 
         </div>
 
-        <!-- Game Board -->
+
+        <!-- GAME BOARD -->
         <div id="game-board" class="game-board"></div>
 
-        <!-- Restart Button -->
-        <button id="restart-btn" class="restart-btn">
+
+        <!-- RESTART BUTTON -->
+        <button
+            id="restart-btn"
+            class="restart-btn"
+            type="button"
+        >
             🔄 Restart Game
         </button>
 
-        <!-- Game Message -->
+
+        <!-- MESSAGE -->
         <p id="message" class="message"></p>
 
-        <!-- Creator -->
+
+        <!-- CREATOR -->
         <p class="creator">
             Built by <strong>Bashith Ali N</strong> 🚀
         </p>
 
     </div>
 
+
+    <!-- JAVASCRIPT -->
     <script src="script.js"></script>
 
 </body>
