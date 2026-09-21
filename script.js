@@ -17,11 +17,17 @@ const symbols = [
     "🌟"
 ];
 
+const difficultyTimes = {
+    easy: 60,
+    medium: 45,
+    hard: 30
+};
+
 let cards = [];
 let firstCard = null;
 let secondCard = null;
-let lockBoard = false;
 
+let lockBoard = false;
 let moves = 0;
 let score = 0;
 let timeLeft = 60;
@@ -30,25 +36,16 @@ let timer = null;
 let gameStarted = false;
 
 
-// ===============================
-// DIFFICULTY SETTINGS
-// ===============================
-
-const difficultyTimes = {
-    easy: 60,
-    medium: 45,
-    hard: 30
-};
-
-
-// ===============================
-// START GAME
-// ===============================
+// ========================================
+// START / RESET GAME
+// ========================================
 
 function startGame() {
 
+    // Stop any existing timer
     clearInterval(timer);
 
+    // Reset game variables
     cards = [];
     firstCard = null;
     secondCard = null;
@@ -56,25 +53,27 @@ function startGame() {
 
     moves = 0;
     score = 0;
+    gameStarted = false;
 
+    // Get selected difficulty
     const difficulty = difficultySelect.value;
 
     timeLeft = difficultyTimes[difficulty];
 
-    gameStarted = false;
-
+    // Update interface
+    timerElement.textContent = timeLeft;
     movesElement.textContent = moves;
     scoreElement.textContent = score;
-    timerElement.textContent = timeLeft;
     messageElement.textContent = "";
 
+    // Create fresh board
     createCards();
 }
 
 
-// ===============================
+// ========================================
 // CREATE CARDS
-// ===============================
+// ========================================
 
 function createCards() {
 
@@ -88,13 +87,17 @@ function createCards() {
 
         const card = document.createElement("button");
 
-        card.classList.add("card");
+        card.type = "button";
+
+        card.className = "card";
 
         card.dataset.symbol = symbol;
 
         card.textContent = "❓";
 
-        card.addEventListener("click", () => flipCard(card));
+        card.addEventListener("click", function () {
+            flipCard(card);
+        });
 
         gameBoard.appendChild(card);
 
@@ -103,9 +106,9 @@ function createCards() {
 }
 
 
-// ===============================
+// ========================================
 // SHUFFLE
-// ===============================
+// ========================================
 
 function shuffle(array) {
 
@@ -114,26 +117,38 @@ function shuffle(array) {
         const randomIndex =
             Math.floor(Math.random() * (i + 1));
 
-        [array[i], array[randomIndex]] =
-            [array[randomIndex], array[i]];
+        [
+            array[i],
+            array[randomIndex]
+        ] = [
+            array[randomIndex],
+            array[i]
+        ];
     }
 
     return array;
 }
 
 
-// ===============================
+// ========================================
 // FLIP CARD
-// ===============================
+// ========================================
 
 function flipCard(card) {
 
-    if (lockBoard) return;
+    if (lockBoard) {
+        return;
+    }
 
-    if (card === firstCard) return;
+    if (card === firstCard) {
+        return;
+    }
 
-    if (card.classList.contains("matched")) return;
+    if (card.classList.contains("matched")) {
+        return;
+    }
 
+    // Start timer on first card
     if (!gameStarted) {
 
         gameStarted = true;
@@ -145,7 +160,7 @@ function flipCard(card) {
 
     card.textContent = card.dataset.symbol;
 
-    if (!firstCard) {
+    if (firstCard === null) {
 
         firstCard = card;
 
@@ -162,17 +177,17 @@ function flipCard(card) {
 }
 
 
-// ===============================
+// ========================================
 // CHECK MATCH
-// ===============================
+// ========================================
 
 function checkMatch() {
 
-    const isMatch =
+    const match =
         firstCard.dataset.symbol ===
         secondCard.dataset.symbol;
 
-    if (isMatch) {
+    if (match) {
 
         firstCard.classList.add("matched");
         secondCard.classList.add("matched");
@@ -189,40 +204,46 @@ function checkMatch() {
 
         lockBoard = true;
 
-        setTimeout(() => {
+        setTimeout(function () {
 
-            firstCard.classList.remove("flipped");
-            secondCard.classList.remove("flipped");
+            if (firstCard && secondCard) {
 
-            firstCard.textContent = "❓";
-            secondCard.textContent = "❓";
+                firstCard.classList.remove("flipped");
+                secondCard.classList.remove("flipped");
+
+                firstCard.textContent = "❓";
+                secondCard.textContent = "❓";
+            }
 
             resetTurn();
 
-        }, 800);
+        }, 700);
     }
 }
 
 
-// ===============================
+// ========================================
 // RESET TURN
-// ===============================
+// ========================================
 
 function resetTurn() {
 
     firstCard = null;
     secondCard = null;
+
     lockBoard = false;
 }
 
 
-// ===============================
+// ========================================
 // TIMER
-// ===============================
+// ========================================
 
 function startTimer() {
 
-    timer = setInterval(() => {
+    clearInterval(timer);
+
+    timer = setInterval(function () {
 
         timeLeft--;
 
@@ -239,9 +260,9 @@ function startTimer() {
 }
 
 
-// ===============================
+// ========================================
 // CHECK WIN
-// ===============================
+// ========================================
 
 function checkWin() {
 
@@ -252,6 +273,8 @@ function checkWin() {
 
         clearInterval(timer);
 
+        gameStarted = false;
+
         const timeBonus = timeLeft;
 
         score += timeBonus;
@@ -259,26 +282,29 @@ function checkWin() {
         scoreElement.textContent = score;
 
         messageElement.textContent =
-            `🎉 You won! Final Score: ${score}`;
+            `🎉 Congratulations! You won! Final Score: ${score}`;
 
-        gameStarted = false;
+        lockBoard = true;
     }
 }
 
 
-// ===============================
+// ========================================
 // GAME OVER
-// ===============================
+// ========================================
 
 function gameOver() {
 
-    lockBoard = true;
+    clearInterval(timer);
+
     gameStarted = false;
 
-    messageElement.textContent =
-        "⏰ Time's up! Try again!";
+    lockBoard = true;
 
-    cards.forEach((card) => {
+    messageElement.textContent =
+        "⏰ Time's up! Click Restart Game to try again.";
+
+    cards.forEach(function (card) {
 
         if (!card.classList.contains("matched")) {
 
@@ -290,28 +316,30 @@ function gameOver() {
 }
 
 
-// ===============================
-// RESTART
-// ===============================
+// ========================================
+// RESTART BUTTON
+// ========================================
 
-restartButton.addEventListener(
-    "click",
-    startGame
-);
+restartButton.addEventListener("click", function () {
+
+    startGame();
+
+});
 
 
-// ===============================
+// ========================================
 // DIFFICULTY CHANGE
-// ===============================
+// ========================================
 
-difficultySelect.addEventListener(
-    "change",
-    startGame
-);
+difficultySelect.addEventListener("change", function () {
+
+    startGame();
+
+});
 
 
-// ===============================
-// INITIALIZE GAME
-// ===============================
+// ========================================
+// START GAME WHEN PAGE LOADS
+// ========================================
 
 startGame();
